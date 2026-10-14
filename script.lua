@@ -1,10 +1,12 @@
--- Roblox ESP + Auto-Aim + Auto-Headshot
-‎-- Android Delta — zero keyboard, pure touch
+‎
+‎-- Roblox ESP + Auto-Aim + Auto-Headshot
+‎-- Android Delta — fixed buttons top-left
 ‎-- Runtime: Delta Executor Android
 ‎
 ‎local Players = game:GetService("Players")
 ‎local RunService = game:GetService("RunService")
 ‎local UserInputService = game:GetService("UserInputService")
+‎local StarterGui = game:GetService("StarterGui")
 ‎local Camera = workspace.CurrentCamera
 ‎local LocalPlayer = Players.LocalPlayer
 ‎
@@ -24,6 +26,14 @@
 ‎local aiming = false
 ‎local last_esp = 0
 ‎local buttons = {}
+‎
+‎pcall(function()
+‎    StarterGui:SetCore("SendNotification", {
+‎        Title = "KEEL",
+‎        Text = "Script loaded - tap buttons top left",
+‎        Duration = 5
+‎    })
+‎end)
 ‎
 ‎local function safe(fn)
 ‎    local ok, err = pcall(fn)
@@ -167,62 +177,62 @@
 ‎    return closest
 ‎end
 ‎
-‎-- on-screen touch buttons (no keyboard)
-‎local function make_button(text, pos, size, callback)
+‎local function make_button(text, y, callback)
 ‎    local bg = Drawing.new("Square")
 ‎    bg.Filled = true
-‎    bg.Color = Color3.fromRGB(30, 30, 30)
-‎    bg.Transparency = 0.35
-‎    bg.Size = size
-‎    bg.Position = pos
+‎    bg.Color = Color3.fromRGB(20, 20, 20)
+‎    bg.Transparency = 0.3
+‎    bg.Size = Vector2.new(110, 40)
+‎    bg.Position = Vector2.new(10, y)
 ‎    bg.Visible = true
+‎    bg.ZIndex = 10
 ‎
 ‎    local label = Drawing.new("Text")
 ‎    label.Text = text
-‎    label.Size = 14
+‎    label.Size = 16
 ‎    label.Center = true
 ‎    label.Outline = true
 ‎    label.Color = Color3.fromRGB(255, 255, 255)
-‎    label.Position = Vector2.new(pos.X + size.X / 2, pos.Y + size.Y / 2 - 7)
+‎    label.Position = Vector2.new(65, y + 12)
 ‎    label.Visible = true
+‎    label.ZIndex = 11
 ‎
-‎    table.insert(buttons, {bg = bg, label = label, pos = pos, size = size, cb = callback})
+‎    table.insert(buttons, {
+‎        bg = bg,
+‎        label = label,
+‎        pos = Vector2.new(10, y),
+‎        size = Vector2.new(110, 40),
+‎        cb = callback
+‎    })
 ‎end
 ‎
-‎local screen = Camera.ViewportSize
-‎local btn_w, btn_h = 90, 36
-‎local gap = 8
-‎local start_x = 12
-‎local start_y = screen.Y - (btn_h + 12) * 4
-‎
-‎make_button("AIM", Vector2.new(start_x, start_y), Vector2.new(btn_w, btn_h), function()
-‎    aiming = not aiming
-‎end)
-‎make_button("ESP", Vector2.new(start_x, start_y + (btn_h + gap)), Vector2.new(btn_w, btn_h), function()
-‎    CFG.ESP = not CFG.ESP
-‎end)
-‎make_button("AIMBOT", Vector2.new(start_x, start_y + (btn_h + gap) * 2), Vector2.new(btn_w, btn_h), function()
-‎    CFG.Aimbot = not CFG.Aimbot
-‎end)
-‎make_button("HEAD", Vector2.new(start_x, start_y + (btn_h + gap) * 3), Vector2.new(btn_w, btn_h), function()
-‎    CFG.AutoHeadshot = not CFG.AutoHeadshot
-‎end)
+‎-- fixed top-left buttons
+‎make_button("AIM", 60, function() aiming = not aiming end)
+‎make_button("ESP", 110, function() CFG.ESP = not CFG.ESP end)
+‎make_button("AIMBOT", 160, function() CFG.Aimbot = not CFG.Aimbot end)
+‎make_button("HEAD", 210, function() CFG.AutoHeadshot = not CFG.AutoHeadshot end)
 ‎
 ‎UserInputService.InputBegan:Connect(function(input, gp)
 ‎    if gp then return end
 ‎    if input.UserInputType ~= Enum.UserInputType.Touch and input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 ‎
-‎    local pos = input.Position
+‎    local pos = Vector2.new(input.Position.X, input.Position.Y)
 ‎    for _, b in ipairs(buttons) do
 ‎        if pos.X >= b.pos.X and pos.X <= b.pos.X + b.size.X and
 ‎           pos.Y >= b.pos.Y and pos.Y <= b.pos.Y + b.size.Y then
 ‎            b.cb()
+‎            pcall(function()
+‎                StarterGui:SetCore("SendNotification", {
+‎                    Title = "KEEL",
+‎                    Text = "Toggled",
+‎                    Duration = 1
+‎                })
+‎            end)
 ‎            break
 ‎        end
 ‎    end
 ‎end)
 ‎
-‎-- safer namecall
 ‎local old
 ‎old = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
 ‎    local method = getnamecallmethod()
@@ -258,25 +268,25 @@
 ‎for _, plr in ipairs(Players:GetPlayers()) do
 ‎    if plr ~= LocalPlayer then
 ‎        task.spawn(function()
-‎            task.wait(1.2)
+‎            task.wait(1)
 ‎            create_drawings(plr)
 ‎        end)
 ‎        plr.CharacterAdded:Connect(function()
-‎            task.wait(1.2)
+‎            task.wait(1)
 ‎            create_drawings(plr)
 ‎        end)
 ‎    end
 ‎end
 ‎
 ‎Players.PlayerAdded:Connect(function(plr)
-‎    task.wait(1.2)
+‎    task.wait(1)
 ‎    create_drawings(plr)
 ‎    plr.CharacterAdded:Connect(function()
-‎        task.wait(1.2)
+‎        task.wait(1)
 ‎        create_drawings(plr)
 ‎    end)
 ‎end)
 ‎
 ‎Players.PlayerRemoving:Connect(remove_drawings)
 ‎
-‎print("[KEEL] pure-touch Android build | tap AIM / ESP / AIMBOT / HEAD buttons bottom-left")
+‎print("[KEEL] loaded - buttons top left")
