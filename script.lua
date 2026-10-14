@@ -1,4 +1,4 @@
-‎```lua
+lua
 ‎-- Roblox ESP + Auto-Aim + Auto-Headshot
 ‎-- Android Delta — zero keyboard, pure touch
 ‎-- Runtime: Delta Executor Android
@@ -281,4 +281,3 @@
 ‎Players.PlayerRemoving:Connect(remove_drawings)
 ‎
 ‎print("[KEEL] pure-touch Android build | tap AIM / ESP / AIMBOT / HEAD buttons bottom-left")
-‎```
