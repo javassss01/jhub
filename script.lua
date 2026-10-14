@@ -1,5 +1,4 @@
-lua
-‎-- Roblox ESP + Auto-Aim + Auto-Headshot
+-- Roblox ESP + Auto-Aim + Auto-Headshot
 ‎-- Android Delta — zero keyboard, pure touch
 ‎-- Runtime: Delta Executor Android
 ‎
